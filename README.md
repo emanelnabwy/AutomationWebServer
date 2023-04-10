@@ -1,4 +1,4 @@
-# atomation-load-balancer
+# AutomationWebServer
 This script automates the setup and configuration of Apache web servers and an Nginx machine acting as a reverse proxy. It uses Bash shell commands and SSH connections to remote servers to perform the following tasks:
 
 - Set the hostname of the remote server.
