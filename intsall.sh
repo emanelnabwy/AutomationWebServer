@@ -11,18 +11,23 @@ source ./function.sh
 
 #####nginx
 echo  -e -n " set hostname nginx for ${IP_NGINX}"
-##hostname  "nginx" ${IP_NGINX}
+hostname  "nginx" ${IP_NGINX}
 echo   "done.."
+
+
 echo  -e -n " install nginx for ${IP_NGINX}"
-##install nginx ${IP_NGINX}
+install nginx ${IP_NGINX}
 echo   "done.."
+
 echo  -e -n " enable and start nginx for ${IP_NGINX}"
-##enable_service nginx ${IP_NGINX}
+enable_service nginx ${IP_NGINX}
 echo   "done.."
+
 echo  -e -n " add service nginx for firewall and open port 80 for ${IP_NGINX}"
-##firewall http ${IP_NGINX}
+firewall http ${IP_NGINX}
 echo   "done.."
-#### set upstream
+
+### ######set upstream
 echo "add upstream at/etc/nginx/conf.d/backend.conf "
 BACKEND=(${IP_WEB1} ${IP_WEB2})
 UPSTREAM="upstream  backend { "
@@ -31,37 +36,52 @@ do
         UPSTREAM+="\n\tserver ${IP};"
 done
 UPSTREAM="${UPSTREAM}\n}"
-##add_upstream ${IP_NGINX} "${UPSTREAM}" 
+add_upstream ${IP_NGINX} "${UPSTREAM}" 
 echo "done.."
+
+
 #####add proxy pass
 echo "add location section in configuration of nginx "
 ssh root@${IP_NGINX} "sed -i 's/^[ ]*location \/ {/\/ { \n\t\tproxy_pass http:\/\/backend;/g' /etc/nginx/nginx.conf"
 echo ".. done"
+
+#####set selinux
 echo -e -n  "work selinux for nginx can load balance"
-##selinux ${IP_NGINX}
+selinux ${IP_NGINX}
 echo "done..."
+
 echo -e -n  "restart nginx" 
-##restart_service nginx  ${IP_NGINX}
+restart_service nginx  ${IP_NGINX}
 echo "done..."
+########################################################################################################
 #####apache mechine
 BACKEND=(${IP_WEB1} ${IP_WEB2})
 CO=1
 for i in ${BACKEND[@]}
-do
+do 
+     ##########set hostname for each apache
      echo -e -n " set hostname apache ${CO} for ${i}"
-    ## hostname  "web${CO}" ${i}
+     hostname  "web${CO}" ${i}
      echo   "done.."
+     
+     ############# install apache on mechine
      echo  -e -n " install apache for ${i}"
-   ## install httpd ${i}
+     install httpd ${i}
       echo   "done.."
+      
+      ##########enable and start apache service
       echo  -e -n " enable and start apache for ${i}"
-    ##  enable_service httpd ${i}
+      enable_service httpd ${i}
       echo   "done.."
+      
+      ######set page in each apache 
       echo  -e -n " set page for apache ${i}"
-      ##set_page ${CO} ${i}
+      set_page ${CO} ${i}
       echo   "done.."
+      
+      #### make firewall accept service httpd "protocol http"
       echo  -e -n " add service apache for firewall and open port 80 for ${i}"
-     ## firewall http ${i}
+      firewall http ${i}
       echo   "done.."
 
 
