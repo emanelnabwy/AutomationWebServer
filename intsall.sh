@@ -2,6 +2,7 @@
 ###########script start two mechine apache and load balance between then usin nginx proxy pass
 #### make  sure nginx mechine can 'ssh' apache mechines with need password
     ###ssh-copy-id <username>@<ip>
+    ### success ....exit 0
 IP_NGINX=192.168.139.181
 IP_WEB1=192.168.139.193
 IP_WEB2=192.168.139.194
